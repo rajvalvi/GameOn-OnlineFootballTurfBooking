@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+	<title>Turf Booking</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"> <b>GameOn</b> Super Admin</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Hi, {{session['name']}}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#"></a>
+              </li>
+            </ul>
+            <span class="navbar-text">
+                <a class="nav-link" href="{{ url_for('super_admin.logout') }}">Log-out</a>
+            </span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="text-center container shadow-lg p-3 mt-5 bg-body rounded vw-100">
+        <h2>Add Turf</h2>
+        <hr>
+        {% if turfMsg=="" %}
+            {{ continue }}
+        {% elif turfMsg=="Turf added successfully"%}
+        <div class="alert alert-success alert-dismissible fade show mx-auto w-50" role="alert">
+          <span>{{ turfMsg }}</span>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% else %}
+          <div class="alert alert-danger alert-dismissible fade show mx-auto w-50" role="alert">
+            <span>{{ turfMsg }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endif %}
+        <form method="POST" action="{{ url_for('super_admin.home')}}">
+            <div class="form-floating mb-2 mx-auto w-50">
+              <input type="text" name="name" class="form-control" placeholder="Perfect Turf" pattern="[a-zA-Z\s]+" 
+              title="Name should Be In Alphabates" required>
+              <label for="floatingInput">Name</label>
+            </div>
+            <div class="form-floating mb-2 mx-auto w-50">
+              <input type="text" name="address" class="form-control" placeholder="Kolhapur, Maharashtra" required>
+              <label for="floatingInput">Address</label>
+            </div>
+            <div class="form-floating mb-2 mx-auto w-50">
+              <input type="email" name="email" class="form-control" placeholder="abc@xyz.com" required>
+              <label for="floatingInput">Email</label>
+            </div>
+            <div class="form-floating mb-3 mx-auto w-50">
+              <input type="password" name="password" class="form-control" minlength="8" placeholder="Password" required>
+              <label for="floatingPassword">Password</label>
+            </div> 
+            <div class="form-floating mb-2 mx-auto w-50">
+              <input type="tel" name="contactNo1" class="form-control" minlength="10" maxlength="13" placeholder="9877665544">
+              <label for="floatingInput">Contact No.</label>
+            </div>
+            <div class="form-floating mb-2 mx-auto w-50">
+              <input type="tel" name="contactNo2" class="form-control" minlength="10" maxlength="13" placeholder="9977665544">
+              <label for="floatingInput">Alternate Contact No.</label>
+            </div>           
+            <button type="submit" class="btn btn-outline-primary">Submit</button>
+        </form>
+    </div>
+
+    <table class="table table-success table-striped table-hover">
+      <thead>
+        <tr>
+          <td>Turf - ID</td>
+          <td>Turf Name</td>
+          <td>Address</td>
+          <td>Email</td>
+          <td>Contact No.</td>
+          <td>Change Status</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for admin in turfDetails %}
+        {% if admin[6]==1%}
+        <tr>
+          <td>{{admin[0]}}</td>
+          <td>{{admin[1]}}</td>
+          <td>{{admin[2]}}</td>
+          <td>{{admin[3]}}</td>
+          <td>{{admin[4]}},{{admin[5]}}</td>
+          <td><a href="{{ url_for('super_admin.changeStatus',turfID=admin[0],oldStatus=1) }}" role="button" class="btn btn-danger"  >Deactivate</a></td>
+        </tr>
+        {% else %}
+        <tr class="table-danger">
+          <td>{{admin[0]}}</td>
+          <td>{{admin[1]}}</td>
+          <td>{{admin[2]}}</td>
+          <td>{{admin[3]}}</td>
+          <td>{{admin[4]}},{{admin[5]}}</td>
+          <td><a href="{{ url_for('super_admin.changeStatus',turfID=admin[0],oldStatus=0) }}" role="button" class="btn btn-success">Activate</a></td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+    
+</body>
+</html>
