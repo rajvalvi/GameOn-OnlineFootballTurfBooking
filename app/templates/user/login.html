@@ -1,0 +1,163 @@
+{% extends "user/layout.html" %}
+
+{% block head %}
+<style>
+  /* login form */
+  .login {
+    position: absolute;
+    width: 260px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    z-index: 1;
+    background-color: #000000a6;
+    padding: 23px;
+    border-radius: 6px;
+  }
+
+  .login form h1 {
+    margin: 4px 0px 37px 0px;
+    font-family: 'Raleway', sans-serif;
+    border-bottom: 3.5px solid rgb(5, 206, 5);
+    width: 90px;
+
+  }
+
+  .login form .text_field input {
+    background: none;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+
+  }
+
+  .login form .text_field {
+    border-bottom: 2px solid rgb(5, 206, 5);
+    margin-bottom: 35px;
+  }
+
+  .login form .text_field:hover {
+    border-bottom: 2px solid rgb(64, 238, 64);
+  }
+
+  .login form .text_field img {
+    width: 20px;
+  }
+
+
+  .login form .submit {
+    padding: 5px 21px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    background: none;
+    border: 3px solid rgb(5, 206, 5);
+    color: white;
+    font-size: 20px;
+    transition: 0.3s;
+    margin: 6px 0px 15px 0px;
+  }
+
+
+  .login form .submit:hover {
+    border: 3px solid rgb(64, 238, 64);
+  }
+
+  .login form p {
+    font-family: 'Raleway', sans-serif;
+    font-size: 13px;
+    margin: 11px 0px 0px 19px;
+  }
+
+  .login form p a {
+    color: white;
+  }
+
+  .login form p a:hover {
+    color: blue;
+  }
+
+  .login form p .forgot_password {
+    margin-left: 50px;
+  }
+
+  .bg_img img {
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .admin p .adminLogin {
+    position: absolute;
+    z-index: 12;
+    padding: 5px 21px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 10%;
+    background: none;
+    border: 3px solid rgb(6, 147, 6);
+    color: rgb(0, 0, 0);
+    font-size: 20px;
+    transition: 0.3s;
+    margin: 560px 0px 15px 660px;
+    text-decoration: none;
+    font-weight: bold;
+    font-family: 'Raleway', sans-serif;
+  }
+
+  .footer {
+    margin-top: -4px;
+  }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class=flashes>
+  {% for message in messages %}
+  <li>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<div class="login">
+  {% if msg=="" %}
+  {{ continue }}
+  {% else %}
+  <div class="alert alert-danger alert-dismissible fade show mx-auto w-50" role="alert">
+    <span>{{ msgUser }}</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endif %}
+  <form method="POST" action="{{ url_for('user.login')}}">
+    <h1>Login</h1>
+    <div class="text_field">
+      <img src="{{url_for('static',filename='user/user.png')}}" alt="">
+      <input type="text" name="email" class="form-control" placeholder="mrperfect@gmail.com" required>
+    </div>
+    <div class="text_field">
+      <img src="{{url_for('static',filename='user/lock.png')}}" alt="">
+      <input type="password" name="password" class="form-control" placeholder="Password" minlength="8"  required>
+    </div>
+    <button type="submit" class="submit">Login</button>
+    <p>Don't have account, <a href="{{url_for('user.register')}}">Register now</a></p>
+    <p><a class="forgot_password" href="{{ url_for('user.forgotPassword')}}">Forgot Password</a></p>
+  </form>
+</div>
+<div class="admin">
+  <p><a href="{{url_for('admin.login')}}" class="adminLogin">Login as Admin</a></p>
+</div>
+<div class="bg_img">
+  <img src="{{url_for('static',filename='user/log-regi.jpg')}}" alt="">
+</div>
+
+{% endblock %}
