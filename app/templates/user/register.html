@@ -1,0 +1,141 @@
+{% extends "user/layout.html" %}
+{% block head %}
+<style>
+    /* registration form */
+.register{
+    position: absolute;
+    width: 260px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    z-index: 1;
+    background-color: #000000a6;
+    padding: 23px;
+    border-radius: 6px;
+}
+
+.register form h1{
+    margin: 4px 0px 37px 0px;
+    font-family: 'Raleway', sans-serif;
+    border-bottom: 3px solid rgb(5, 206, 5);
+    width: 55%;
+    font-size: 24px;
+
+}
+
+.register form .text_field input{
+    background: none;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+
+}
+
+.register form .text_field{
+    border-bottom: 2px solid rgb(5, 206, 5);
+    margin-bottom: 35px;
+}
+
+.register form .text_field:hover{
+    border-bottom: 2px solid rgb(64, 238, 64);
+}
+
+.register form .text_field img{
+    width: 20px;
+}
+
+
+.register form .submit{
+    padding: 5px 21px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    background: none;
+    border: 3px solid rgb(5, 206, 5);
+    color: white;
+    font-size: 20px;
+    transition: 0.3s;
+    margin: 6px 0px 15px 0px;
+}
+
+
+.register form .submit:hover{
+    border:3px solid rgb(64, 238, 64);
+}
+.register form p a{
+    color: white;
+}
+.bg_img img{
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.footer{
+  margin-top: -4px;
+}
+
+.msg{
+    
+    margin-top: 200px;
+    position: absolute;
+    left: 43%;
+    top: -9%;
+    color: white;
+    font-size: 25px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="msg">
+        {{msg}}
+    </div>
+    <div class="register">
+        <form action="{{url_for('user.register')}}" method="post">
+            <h1>Registration</h1>
+            <div class="text_field">
+                <img src="{{url_for('static',filename='user/user.png')}}" alt="">
+                <input id="username" name="name" type="text" placeholder="Enter Your name"
+                name="name" pattern="[a-zA-Z\s]+" title="Name should Be In Alphabates" required>
+            </div>
+
+            <div class="text_field">
+                <img src="{{url_for('static',filename='user/user.png')}}" alt="">
+                <input id="username" name="userid" type="text" placeholder="Enter userid"
+                name="name" minlength="3"  required>
+            </div>
+
+            <div class="text_field">
+                <img src="{{url_for('static',filename='user/user.png')}}" alt="">
+                <input type="email" class="form-control" id="registerInputEmail1" name="email"
+                placeholder="Enter Email"
+                minlength="12" maxlength="30" title="Please enter valid Email address" required>
+            </div>
+
+            <div class="text_field">
+                <img src="{{url_for('static',filename='user/user.png')}}" alt="">
+                <input type="text" class="form-control" id="registerInputPhone" aria-describedby="emailHelp"
+                placeholder="Enter Phone no"
+                name="phoneNo" minlength="10" maxlength="13" title="Please Enter valid Contact Number"
+                required>
+            </div>
+
+            <div class="text_field">
+                <img src="{{url_for('static',filename='user/lock.png')}}" alt="">
+                <input id="password" name="password" type="password" placeholder="Enter Your Password"
+                minlength="8" maxlength="20" title="Eight or more characters" required>
+            </div>
+            <input class="submit" type="submit" class="btn" value="Sign Up">
+            <p>Already have an account? <a href="{{url_for('user.login')}}"> Sign In here</a></p>
+        </form>
+    </div>
+    <div class="bg_img">
+        <img src="{{url_for('static',filename='user/log-regi.jpg')}}" alt="">
+    </div>
+
+
+    {% endblock %}

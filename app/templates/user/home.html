@@ -1,0 +1,118 @@
+{% extends "user/layout.html" %}
+
+{% block head %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@600;900&display=swap');
+  /* backgroung image */
+.banner img{
+  width: 100%;
+  height: 100vh; 
+  background-size: cover;
+  position: relative;
+}
+
+/* dark clip patch for sticker */
+
+.banner-clip-path{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip-path:polygon(0 0,25% 0,50% 100%,0 100%);
+  background-color: rgba(0,0,0,0.4);
+  z-index: 2;
+  top: 0px;
+}
+/* football palyer sticker */
+
+.home_sticker{
+    z-index: 2;
+    top: 180px;
+    left: 5px;
+    width: 510px;
+    position: absolute;
+  }
+
+
+/* onilne turf booking main heaidng */
+
+h1{
+   position: absolute;
+   z-index: 2;
+   color: white;
+   font-size: 115px;
+   font-family: 'Big Shoulders Stencil Text', cursive;
+   background: -webkit-linear-gradient(0deg,rgb(200, 255, 0),white);
+   -webkit-background-clip:text;
+   -webkit-text-fill-color:transparent;
+}
+.head-1{
+  left: 939px;
+  top: 162px;;
+}
+.head-2{
+  left: 810px;
+  top: 285px;
+}
+.head-3{
+  left: 911px;
+  top: 410px;
+}
+
+/*onilne turf booking main heaidng button*/
+
+.head_button{
+  background-image: linear-gradient(90deg,rgba(255, 255, 0, 0.479),rgba(255, 255, 255, 0.336));
+  font-size: 17px;
+  margin-top: 16px;
+  padding: 4px 24px;
+  color: black;
+  border: 2px solid black;
+  border-radius: 15px;
+  cursor: pointer;
+  left: 1053px;
+  top: 531px;
+  position: absolute;
+  z-index: 2;
+  transition: all 0.1s linear;
+  text-decoration: none;
+}
+
+.head_button a{
+  text-decoration: none;
+  color: black;
+}
+
+.head_button:hover{
+  color:black;
+  background-image: linear-gradient(180deg,rgba(255, 255, 255, 0.336),rgba(255, 255, 0, 0.479));
+  padding: 5px 25px;
+  text-align: center;
+  transform: scale(1);
+
+}
+
+.footer{
+  margin-top: -4px;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="head-1"> ONLINE</h1>
+    <h1 class="head-2">FOOTBALL TURF</h1>
+    <h1 class="head-3">BOOKING</h1>
+    <button type="button" class="head_button" name="button"><a href="{{url_for('user.turf')}}">Let's Go</a></button>
+
+    <div class="banner">
+        <img src="{{ url_for('static',filename='user/football_back.jpg') }}" alt="background">
+    </div>
+    <div class="banner-clip-path">
+
+    </div>
+    <img class="home_sticker" src="{{ url_for('static',filename='user/logo.png') }}" alt="sticker">
+
+    {% endblock %}
+
+     
