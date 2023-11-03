@@ -1,0 +1,59 @@
+{% extends "user/layout.html" %}
+
+    {% block head %}
+  
+    <style>
+       /*about image */
+
+.about_img h1{
+    position: absolute;
+    color: white;
+    font-size: 97px;
+    z-index: 2;
+    margin-top: 9.5%;
+    margin-left: 35%;
+    font-family: 'Raleway', sans-serif;
+    font-weight: unset;
+
+
+}
+
+.about_img img{
+    width: 100%;
+    filter: brightness(60%);
+    margin-bottom: 70px;
+
+}
+
+.about{
+    max-width: 80.2%;
+    margin:auto;
+    font-size: 25px;
+
+}
+
+.about p{
+    padding-bottom: 56px;
+    margin-top: -28px;
+    font-family: system-ui;
+    font-weight: 400;
+
+}
+</style>
+
+    {% endblock %}
+
+    {% block content %}
+    <div class="about_img" >
+        <h1>About Us</h1>
+        <img src="{{url_for('static',filename='user/about.jpg')}}" alt="">
+    </div>
+
+    <div class="about">
+        <p>
+            &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;GameOn is the first Online Football Turf booking service, In Kolhapur reagion. We provide booking shcedules for all the Turfs associated with Kolhapur city
+            We provide full realtime information of the Turfs registred with us. Along with this, We Organize Leauge Tournaments as well as Footsal Tournaments. 
+            Therefore GameOn is the best place where you can book a turf and kick a goal ! 
+        </p>
+    </div>
+    {% endblock %}
