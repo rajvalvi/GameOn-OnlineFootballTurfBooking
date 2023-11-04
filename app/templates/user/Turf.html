@@ -68,7 +68,29 @@
         </div>
     </div>  
     {% for turf in turfDetails%}
+   
+    <div class="turf">
+        <div class="turf_container">
+            <div class="turf_img_cls">
+                <img src="{{url_for('static',filename='user/'+ turf[10])}}" alt="" class="turfImg">
+            </div>
+            <div class="turf_detail">
+                <a href="#" >{{ turf[1] }}</a>
+                <p>{{ turf[2] }}</p>
+            </div>
+             {% if 'userLoggedin' in session  %}
+            <div>
+                <button type="button"class="learn-more-btn"><a href="{{ url_for('user.book',turfID=turf[0]) }}"> Learn more</a> </button>
+            </div>
+                  {% else %}
+                  <div>
+                  <button type="button"class="learn-more-btn"><a href="{{url_for('user.login')}}"> Learn more</a> </button>
+                </div>
+                {% endif  %}
+            
 
+        </div>
+    </div>
 
     {% endfor %}
 
