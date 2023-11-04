@@ -1,0 +1,76 @@
+{% extends "user/layout.html" %}
+
+{% block head %}
+
+<style>
+    /* navigation bar background color and football player image */
+.nav_bg{
+    width: 100%;
+    height: 60vh;
+    display: flex;
+    position: relative;
+    top: -1px;
+    left: 835px;
+    transform: translate(-55%);
+    z-index: 1;
+    background: linear-gradient(-90deg,#02203c,#001528);
+    margin-bottom: 50px;
+
+}
+
+
+.nav_bg .head_bg_image img{
+    position: absolute;
+    z-index: 2;
+    width: 640px;
+    margin-top: 100px;
+    margin-left: 221px;
+
+}
+
+/* heading and discription of webside below the navigation bar */
+
+.head_highlight{
+    margin-top: 200px;
+    color: white;
+    margin-left: 175px;
+    font-family: 'Raleway', sans-serif;
+}
+
+.head_highlight h2{
+    font-size: 50px;
+    font-weight: 400;
+    color: rgba(197, 197, 197, 0.993);
+}
+
+.head_highlight p{
+    font-size: 20px;
+    font-family: 'Yellowtail', cursive;
+}
+
+        /* heading ended here */
+
+/* list of turf grounds */
+
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="nav_bg">
+        <div class="head_highlight">
+            <h2>GameOn</h2>
+            <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ITS HERE..!!&nbsp;&nbsp;&nbsp;  LETS PLAY.. </p>
+        </div>
+        <div class="head_bg_image">
+            <img src="{{url_for('static',filename='user/template.png')}}" alt="">
+        </div>
+    </div>  
+    {% for turf in turfDetails%}
+
+
+    {% endfor %}
+
+
+{% endblock %}
