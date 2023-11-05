@@ -13,8 +13,7 @@
     left: 835px;
     transform: translate(-55%);
     z-index: 1;
-    background: linear-gradient(-90deg,#02203c,#001528);
-    margin-bottom: 50px;
+   
 
 }
 
@@ -22,9 +21,7 @@
 .nav_bg .head_bg_image img{
     position: absolute;
     z-index: 2;
-    width: 640px;
-    margin-top: 100px;
-    margin-left: 221px;
+  
 
 }
 
@@ -35,6 +32,8 @@
     color: white;
     margin-left: 175px;
     font-family: 'Raleway', sans-serif;
+    background: linear-gradient(-90deg,#02203c,#001528);
+    margin-bottom: 50px;
 }
 
 .head_highlight h2{
@@ -46,6 +45,9 @@
 .head_highlight p{
     font-size: 20px;
     font-family: 'Yellowtail', cursive;
+    width: 640px;
+    margin-top: 100px;
+    margin-left: 221px;
 }
 
         /* heading ended here */
@@ -68,13 +70,18 @@
         </div>
     </div>  
     {% for turf in turfDetails%}
-   
+    {% else %}
+                  <div>
+                  <button type="button"class="learn-more-btn"><a href="{{url_for('user.login')}}"> Learn more</a> </button>
+                </div>
+                {% endif  %}
     <div class="turf">
         <div class="turf_container">
             <div class="turf_img_cls">
                 <img src="{{url_for('static',filename='user/'+ turf[10])}}" alt="" class="turfImg">
             </div>
             <div class="turf_detail">
+                <div class="turf_detail">
                 <a href="#" >{{ turf[1] }}</a>
                 <p>{{ turf[2] }}</p>
             </div>
@@ -82,11 +89,7 @@
             <div>
                 <button type="button"class="learn-more-btn"><a href="{{ url_for('user.book',turfID=turf[0]) }}"> Learn more</a> </button>
             </div>
-                  {% else %}
-                  <div>
-                  <button type="button"class="learn-more-btn"><a href="{{url_for('user.login')}}"> Learn more</a> </button>
-                </div>
-                {% endif  %}
+                  
             
 
         </div>
