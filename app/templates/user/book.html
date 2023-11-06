@@ -1,0 +1,17 @@
+{% extends "user/layout.html" %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+ integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+ <style>
+{% endblock %}
+
+{% block content %}
+<br>
+<div class="turf-img">
+  <h1>{{ turfData[0][0] }}</h1>
+  <p class="address">{{ turfData[0][1] }}</p>
+  <p class="address" style="margin-top: 440px;">800 RS</p>
+  <img src="{{url_for('static',filename='user/turf_back_3.1.jpg')}}" alt="">
+
+  {% endblock %}
