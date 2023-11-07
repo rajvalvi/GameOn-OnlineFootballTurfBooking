@@ -113,3 +113,24 @@ def register():
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
     return render_template('user/register.html', msg=msg)
+
+
+@user.route('/mybookings', methods=['GET','POST'])
+def mybookings():
+    bookingData = ""
+    if 'userLoggedin' in session:
+        cur = mysql.connection.cursor()
+        cur.execute('select * from bookings where userid=%s',(session['loggedinuserid'],))
+        bookingData = cur.fetchall()
+        # print(bookingData)
+    return render_template("user/mybookings.html", bookingData=bookingData)
+
+
+@user.route('/profile')
+def profile():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM users WHERE userid = %s',(session['loggedinuserid'],))
+    data =cursor.fetchone()
+    cursor.execute('select * from bookings where userid=%s',(session['loggedinuserid'],))
+    bookingData = cursor.fetchall()
+    return render_template('user/profile.html', data=data,bookingData=bookingData)

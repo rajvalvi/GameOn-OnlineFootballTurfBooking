@@ -1,0 +1,62 @@
+{% extends 'user/layout.html' %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+<style>
+    .profile_img{
+        width: 12%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<br>
+<br>
+<br>
+<br>
+
+
+<center>
+    <img class="profile_img" src="{{url_for('static',filename='user/profile.jpg')}}" alt="">
+    <!-- <img src="{{ url_for('static',filename='') }}" alt=""> -->
+
+
+    <h3>{{ data['name']}}</h3>
+    <h6>{{ data['email'] }}</h6>
+    <h6>{{ data['phoneNo'] }}</h6>
+    <a href="{{url_for('user.edit_profile')}}" type="button" class="btn btn-secondary"> Edit Profile</a>
+    
+</center>
+<br>
+<br>
+
+{% if bookingData!=() %}
+    <table class="table table-success table-striped table-hover">
+        <thead>
+        <tr>
+            <td>Turf ID</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td>Cancel</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in bookingData  %}
+        <tr>
+            <td>{{data['turfid']}}</td>
+            <td>{{data['bookdate']}}</td>
+            <td>{{data['booktime']}}</td>
+            <td><button type="button" class="btn btn-danger"">
+            Cancel
+            </button></td>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+      <h3>No bookings :( Go, Book and Play</h3>
+{% endif %}
+
+
+{% endblock %}
