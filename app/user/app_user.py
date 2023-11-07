@@ -134,3 +134,24 @@ def profile():
     cursor.execute('select * from bookings where userid=%s',(session['loggedinuserid'],))
     bookingData = cursor.fetchall()
     return render_template('user/profile.html', data=data,bookingData=bookingData)
+
+
+@user.route('/edit_profile',methods=['GET','POST'])
+def edit_profile():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM users WHERE userid = %s',(session['loggedinuserid'],))
+    data =cursor.fetchone()
+    return render_template('user/edit_profile.html', data=data)
+
+@user.route('/update_profile',methods=['GET','POST'])
+def update_profile():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phoneNo = request.form['phoneNo']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("UPDATE users SET name = %s, email = %s, phoneNo= %s WHERE userid = %s ",(name,email,phoneNo,session['loggedinuserid']))
+        mysql.connection.commit()
+        print("data updated")
+    return redirect(url_for('user.profile'))
+
