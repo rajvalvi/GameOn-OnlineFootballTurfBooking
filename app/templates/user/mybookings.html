@@ -1,0 +1,53 @@
+{% extends "user/layout.html" %}
+
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+<style>
+    table{
+        margin-top: 50px;
+        position: absolute;
+    }
+    .footer{
+        margin-top: 450px;
+    }
+
+    .nav{
+        margin-bottom: 100px;
+    }    
+</style>
+{% endblock %}
+
+{% block content %}
+<br>
+<br>
+<br>
+
+{% if bookingData!=() %}
+    <table class="table table-success table-striped table-hover">
+        <thead>
+        <tr>
+            <td>Turf ID</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td>Cancle</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in bookingData  %}
+        <tr>
+            <td>{{data[0]}}</td>
+            <td>{{data[2]}}</td>
+            <td>{{data[3]}}</td>
+            <td><button type="button" class="btn btn-danger"">
+            Cancle
+            </button></td>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+      <h3>No bookings :( Go, Book and Play</h3>
+{% endif %}
+
+{% endblock %}
