@@ -126,6 +126,101 @@ def mybookings():
     return render_template("user/mybookings.html", bookingData=bookingData)
 
 
+def createBookingList(start_time, end_time, bookedDetails):
+    turfTimeDetails=[]
+    today = datetime.datetime.now().replace(microsecond=0, second=0, minute=0) + datetime.timedelta(hours=2)
+    end_date=today + datetime.timedelta(days=7)
+    cur_time = today.time()
+    cur_time=datetime.datetime.combine(datetime.date.min, cur_time) - datetime.datetime.min
+    while(today<end_date):
+        #print("Date : ",today.date())
+        while cur_time>=start_time and cur_time<=end_time:   
+            status=0     
+            #print(cur_time)
+            for booked in bookedDetails:
+                if booked[0]==today.date() and booked[1]==cur_time:
+                    status=1
+                    break
+            turfTimeDetails.append((today.date(),cur_time,status))  
+            cur_time += datetime.timedelta(hours=1)
+        cur_time=start_time
+        today += datetime.timedelta(days=1)
+    return turfTimeDetails
+
+@user.route('/book/<turfID>', methods=['GET', 'POST'])
+def book(turfID):
+    if 'userLoggedin' in session:
+        turfTimeDetails=[]
+        cur = mysql.connection.cursor()
+        cur.execute('select name, address, contactNo1, contactNo2, starttime, endtime, rate from admin where turfid=%s and status=%s',(turfID,'1',))
+        turfData = cur.fetchall()
+        #print(turfData)
+        if turfData:
+            cur.execute('select bookDate, bookTime, status from bookings where turfid = %s', (turfID,))
+            bookedDetails = cur.fetchall()
+            #print(bookedDetails)
+            start_time=turfData[0][4]
+            end_time=turfData[0][5]
+            turfTimeDetails=createBookingList(start_time, end_time, bookedDetails)
+            # print(turfTimeDetails)
+        else:
+            return redirect("user.home") 
+        cur.close()        
+        return render_template("user/book.html", turfTimeDetails=turfTimeDetails,turfData=turfData, turfID=turfID)
+    else: 
+        return redirect(url_for('user.home')) 
+
+@user.route('/bookingConfirmation', methods=['POST'])
+def bookingConfirmation():
+    userid=request.form['turf_id']
+    bookingDate=request.form['turf_booking_date']
+    bookingTime=request.form['turf_booking_time']
+    return '<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">\
+    <div class="modal-dialog">\
+        <div class="modal-content">\
+        <div class="modal-header">\
+            <h5 class="modal-title" id="staticBackdropLabel">Confirm</h5>\
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\
+        </div>\
+        <div class="modal-body">\
+            Do you want to confirm booking on '+bookingDate+' at '+bookingTime+'\
+        </div>\
+        <div class="modal-footer">\
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>\
+            <button onclick="confirmBooking('+userid+',\''+bookingDate+'\',\''+bookingTime+'\')" class="btn btn-warning">Confirm Booking</button>\
+        </div>\
+        </div>\
+    </div>\
+    </div>'
+
+@user.route('/confirmUserBooking', methods=['POST'])
+def confirmUserBooking():
+    turf_id=request.form['turf_id']
+    bookingDate=request.form['turf_booking_date']
+    bookingTime=request.form['turf_booking_time']
+    cursor = mysql.connection.cursor()
+    cursor.execute('INSERT INTO bookings VALUES (%s, %s, %s, %s, %s)', (turf_id,session['loggedinuserid'], bookingDate,bookingTime, 1))
+    mysql.connection.commit()
+    return '<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">\
+    <div class="modal-dialog">\
+        <div class="modal-content">\
+        <div class="modal-header">\
+            <h5 class="modal-title" id="staticBackdropLabel">Booking Confirmed</h5>\
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>\
+        </div>\
+        <div class="modal-body">\
+            Your booking on '+bookingDate+' at '+bookingTime+' has been confirmed.\
+        </div>\
+        <div class="modal-footer">\
+            <a href="http://127.0.0.1:5000/profile" type="button" class="btn btn-success">Okay</a>\
+        </div>\
+        </div>\
+    </div>\
+    </div>'
+
+
+
+
 @user.route('/profile')
 def profile():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
