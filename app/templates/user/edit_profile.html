@@ -1,0 +1,68 @@
+{% extends "user/layout.html" %}
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+<style>
+    .profile_img{
+        width: 12%;
+    }
+
+    .new_form{
+        max-width: 40%;
+        display: flex;
+        flex-direction: column;
+        width: auto;
+        margin-left: 32%;
+    }
+
+    /* .new_btn{
+      width: 100px;
+    } */
+</style>
+{% endblock %}
+
+{% block content %}
+<center>
+  <br>
+  <br>
+  <br>
+  <br>
+  <h2>Edit Profile</h2>
+  <br>
+  <br>
+</center>
+    <form class="new_form" method="post" action="{{ url_for('user.update_profile') }}">
+        <!-- <div class="form-group">
+            <img class="profile_img" src="{{url_for('static',filename='user/profile.jpg')}}" alt="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input name="image" type="file" class="form-control-file" id="exampleFormControlFile1">
+          </div>
+          <br> -->
+
+        <div class="form-group">
+          <label>Name</label>
+          <input name="name" type="text" class="form-control" value="{{data.name}}"  placeholder="Enter name">
+        </div>
+        <br>
+        <!-- <div class="form-group">
+            <label>username</label>
+            <input name="username" type="text" class="form-control" value="{{data.username}}"  placeholder="Enter username">
+          </div> -->
+          <br>
+          <div class="form-group">
+            <label>email</label>
+            <input name="email" type="email" class="form-control" value="{{data.email}}"  placeholder="Enter Email">
+          </div>
+         
+          <br>
+          <div class="form-group">
+            <label>Conatact Number</label>
+            <input name="phoneNo" type="number" class="form-control" value="{{data.phoneNo}}"  placeholder="Enter Number">
+          </div> 
+        <br>
+        <button type="submit" class=" new_btn btn btn-primary">Update</button>
+      </form>
+      <br>
+      <br>
+
+{% endblock %}
