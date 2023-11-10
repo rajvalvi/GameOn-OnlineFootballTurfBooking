@@ -250,3 +250,45 @@ def update_profile():
         print("data updated")
     return redirect(url_for('user.profile'))
 
+
+
+def sendEmail(to, link):
+    import smtplib
+    # print(html_body)
+    gmail_user = 'onlineturfbooking@gmail.com'
+    gmail_password = 'Turf@1234'
+
+    sent_from = gmail_user
+    subject = 'Password reset requested'
+    body = "Dear, User\nTo reset your password click on this link "+link+"\n\nThis link is valid for 10 minutes.\n\nAlternatively, you can paste the following link in your browser's address bar:\n"+link+"\n\nSincerely\nTeam OnlineTurfBooking"
+
+    email_text = """\
+    From: %s
+    To: %s
+    Subject: %s
+
+    %s
+    """ % (sent_from, to, subject, body)
+
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+        print('Email sent!')
+        return True
+    except:
+        print('Something went wrong...')
+        return False
+
+
+def checkMail(email):
+    cur = mysql.connection.cursor()
+    cur.execute('select userID from users where email = %s', (email,))
+    logdata = cur.fetchone()
+    cur.close()
+    if logdata:
+        return True
+    else:
+        return False
