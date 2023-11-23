@@ -1,0 +1,173 @@
+{% extends "user/layout.html" %}
+
+{% block head %}
+
+<style>
+
+    /*contact image */
+
+.contact_img h1{
+    position: absolute;
+    color: white;
+    font-size: 97px;
+    z-index: 2;
+    margin-top: 9.5%;
+    margin-left: 35%;
+    font-family: 'Raleway', sans-serif;
+    font-weight: unset;
+
+
+}
+
+.contact_img img{
+    width: 100%;
+    filter: brightness(60%);
+    margin-bottom: 70px;
+
+}
+
+
+
+/* contact form */
+
+.contact_form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 50%;
+    margin-left: 24%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+
+
+.contact_form .text_field{
+    margin: 20px 0px;
+    width: 100%;
+    border-bottom: 2px solid silver;
+}
+
+.contact_form .text_field input,textarea{
+    width: 100%;
+    border: none;
+    font-size: 20px;
+    background: none;
+    outline: none;
+    font-family: 'Raleway', sans-serif;
+
+}
+
+.contact_btn{
+    padding: 6px 30px;
+    border-radius: 11px;
+    font-size: 17px;
+    text-transform: uppercase;
+    color: #02203c;
+    background: none;
+    border: 2px solid #02203c;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 50px;
+
+}
+
+.contact_btn:hover{
+    color: white;
+    background-color: #02203c;
+}
+
+/* contact info */
+.contact_info{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    background-color: grey;
+    height: 30vh;
+    align-items: center;
+
+}
+
+.contact_info .contact{
+    margin-left: 50px;
+    
+}
+
+
+.contact_info .work_hrs{
+    margin-right: 50px;
+    
+}
+
+.contact_info h3{
+    color: white;
+    font-family: 'Raleway', sans-serif;
+    text-transform: uppercase;
+    line-height: 2;
+}
+
+.contact_info p{
+    color: white;
+    font-family: 'Raleway', sans-serif;
+}
+.msg{
+    position: absolute;
+    margin: 423px 0px 0px 584px;
+    font-size: 30px;
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="msg">
+        {{msg}}
+    </div>
+    <div class="contact_img" >
+        <h1>Contact Us</h1>
+        <img src="{{url_for('static',filename='user/contact.jpg')}}" alt="">
+    </div>
+    <form action="" method="post">
+    <div class="contact_form">
+        <div class="text_field">
+            <input type="text" placeholder="Name" name="name">
+        </div>
+        <div class="text_field">
+            <input type="text" placeholder="Contact No." name="contact_no">
+        </div>
+        <div class="text_field">
+            <input type="email" placeholder="Email" name="email">
+        </div>
+        <div class="text_field">
+            <textarea cols="10" rows="5" placeholder="Message" name="message"></textarea>
+        </div>
+        <div>
+            <input class="contact_btn" type="submit">
+        </div> 
+    </div>
+    </form>   
+    
+
+    <div class="contact_info">
+        <div class="contact">
+            <h3>Conact info:</h3>
+            <p> <b> Email :</b> turfbooking@gmail.com</p>
+            <p><b>Contact No:</b> +91 1122334455</p>
+        </div>
+        <div class="address">
+            <h3>Address:</h3>
+            <p>kasbekar park, jai bhavani colony,phulewadi</p>
+            <p>kolhapur, Maharashtra 416010</p>
+        </div>
+        <div class="work_hrs">
+            <h3>Working hrs:</h3>
+            <p>Monday-Friday</p>
+            <p>10:00 AM to 7:00 PM</p>
+        </div>
+    </div>
+
+{% endblock %}
+   

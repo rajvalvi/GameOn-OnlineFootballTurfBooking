@@ -91,9 +91,9 @@ def register():
         phoneNo = request.form['phoneNo'].strip()
         password = request.form['password'].strip()
         password = sha256_crypt.hash(password)
-        print(name)
+        # print(name)
         cursor = mysql.connection.cursor()
-        print(name)
+        # print(name)
         cursor.execute('SELECT * FROM users WHERE userid = % s', (userid,))
         account = cursor.fetchone()
         if account:
@@ -114,7 +114,6 @@ def register():
         msg = 'Please fill out the form !'
     return render_template('user/register.html', msg=msg)
 
-
 @user.route('/mybookings', methods=['GET','POST'])
 def mybookings():
     bookingData = ""
@@ -125,6 +124,168 @@ def mybookings():
         # print(bookingData)
     return render_template("user/mybookings.html", bookingData=bookingData)
 
+
+@user.route('/profile')
+def profile():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM users WHERE userid = %s',(session['loggedinuserid'],))
+    data =cursor.fetchone()
+    cursor.execute('select * from bookings where userid=%s',(session['loggedinuserid'],))
+    bookingData = cursor.fetchall()
+    return render_template('user/profile.html', data=data,bookingData=bookingData)
+
+@user.route('/edit_profile',methods=['GET','POST'])
+def edit_profile():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM users WHERE userid = %s',(session['loggedinuserid'],))
+    data =cursor.fetchone()
+    return render_template('user/edit_profile.html', data=data)
+
+@user.route('/update_profile',methods=['GET','POST'])
+def update_profile():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phoneNo = request.form['phoneNo']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("UPDATE users SET name = %s, email = %s, phoneNo= %s WHERE userid = %s ",(name,email,phoneNo,session['loggedinuserid']))
+        mysql.connection.commit()
+        print("data updated")
+    return redirect(url_for('user.profile'))
+
+
+@user.route('/about')
+def about():
+    return render_template('user/about.html')
+
+@user.route('/contact_us', methods=['GET', 'POST'])
+def contact_us():
+    return render_template('user/contact_us.html')
+
+# @user.route('/layout')
+# def layout():
+#     return render_template("user/layout.html")
+
+    
+# def login():
+#     if 'userLoggedin' in session:
+#         return redirect(url_for('user.home'))
+#     else:
+#         msg = ""
+#         if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
+#             details = request.form
+#             email = details['email'].strip()
+#             password = details['password'].strip()
+#             cur = mysql.connection.cursor()
+#             cur.execute('select userID,name,password from users where email = %s', (email,))
+#             logdata = cur.fetchone()
+#             cur.close()
+#             if logdata:
+#                 if sha256_crypt.verify(password, logdata[2]):
+#                     session['userLoggedin'] = True
+#                     # print(logdata)
+#                     session['name'] = logdata[0]
+#                     return redirect(url_for('user.home'))
+#                 msg = "Incorrect password !! "
+#             else:
+#                 msg = "Incorrect username !!"
+#             return render_template('user/Turf.html', msgUser = msg)
+#         return render_template('user/Turf.html', msgUser = msg)
+
+
+
+def sendEmail(to, link):
+    import smtplib
+    # print(html_body)
+    gmail_user = 'onlineturfbooking@gmail.com'
+    gmail_password = 'Turf@1234'
+
+    sent_from = gmail_user
+    subject = 'Password reset requested'
+    body = "Dear, User\nTo reset your password click on this link "+link+"\n\nThis link is valid for 10 minutes.\n\nAlternatively, you can paste the following link in your browser's address bar:\n"+link+"\n\nSincerely\nTeam OnlineTurfBooking"
+
+    email_text = """\
+    From: %s
+    To: %s
+    Subject: %s
+
+    %s
+    """ % (sent_from, to, subject, body)
+
+    try:
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
+        server.sendmail(sent_from, to, email_text)
+        server.close()
+        print('Email sent!')
+        return True
+    except:
+        print('Something went wrong...')
+        return False
+
+
+def checkMail(email):
+    cur = mysql.connection.cursor()
+    cur.execute('select userID from users where email = %s', (email,))
+    logdata = cur.fetchone()
+    cur.close()
+    if logdata:
+        return True
+    else:
+        return False
+
+@user.route('/forgotPassword', methods=['GET', 'POST'])
+def forgotPassword():
+    msg=""
+    if 'userLoggedin' in session:
+        return redirect(url_for('user.home'))
+    else:
+        if request.method == 'POST' and 'email' in request.form:
+            details = request.form
+            email = details['email'].strip()
+            if checkMail(email):
+                msg="user found"
+                expires = datetime.timedelta(minutes=10)
+                reset_token = create_access_token(email, expires_delta=expires)
+                url="http://127.0.0.1:5000"+url_for('user.resetpassword',token=reset_token)
+                #print(url)
+                html_body=render_template('user/reset_password.html', url=url)
+                if sendEmail(email,url):
+                    msg="Mail sent successfully to your email !! :)"                    
+                else:
+                    msg="Some error occured"
+            else:
+                msg="Email doesn't not exists !!!"
+        else:
+            msg="Enter Data Correctly"
+    return render_template("user/forgotPassword.html",msgUser=msg)
+
+@user.route('resetpassword/<token>', methods=['GET', 'POST'])
+def resetpassword(token):
+    msg=""
+    useremail = decode_token(token)['sub']
+    print(decode_token(token))
+    if checkMail(useremail):  
+        if request.method == 'POST':
+            details = request.form
+            password = details['password'].strip()
+            cpassword= details['confirmpassword'].strip()
+            if password==cpassword:
+                haspass=sha256_crypt.hash(password)
+                cur = mysql.connection.cursor()
+                cur.execute('update users set password=%s where email = %s', (haspass,useremail,))
+                mysql.connection.commit()
+                cur.close()
+                flash("Password changed successfuly. You can login with your new password")
+                return redirect(url_for('user.login'))
+            else:
+                msg="Passwords did not match"
+        else:
+            msg="Please the data correctly"
+    else:
+        msg="Invalid Link :("
+    return render_template("user/reset_password.html",msgReset=msg,reset_token=token)
 
 def createBookingList(start_time, end_time, bookedDetails):
     turfTimeDetails=[]
@@ -221,74 +382,87 @@ def confirmUserBooking():
 
 
 
-@user.route('/profile')
-def profile():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM users WHERE userid = %s',(session['loggedinuserid'],))
-    data =cursor.fetchone()
-    cursor.execute('select * from bookings where userid=%s',(session['loggedinuserid'],))
-    bookingData = cursor.fetchall()
-    return render_template('user/profile.html', data=data,bookingData=bookingData)
-
-
-@user.route('/edit_profile',methods=['GET','POST'])
-def edit_profile():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM users WHERE userid = %s',(session['loggedinuserid'],))
-    data =cursor.fetchone()
-    return render_template('user/edit_profile.html', data=data)
-
-@user.route('/update_profile',methods=['GET','POST'])
-def update_profile():
-    if request.method == 'POST':
-        name = request.form['name']
-        email = request.form['email']
-        phoneNo = request.form['phoneNo']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("UPDATE users SET name = %s, email = %s, phoneNo= %s WHERE userid = %s ",(name,email,phoneNo,session['loggedinuserid']))
-        mysql.connection.commit()
-        print("data updated")
-    return redirect(url_for('user.profile'))
+@user.route('/logout')
+def logout():
+    session.pop('userLoggedin', None)
+    session.pop('userName', None)
+    return redirect(url_for('user.home'))
 
 
 
-def sendEmail(to, link):
-    import smtplib
-    # print(html_body)
-    gmail_user = 'onlineturfbooking@gmail.com'
-    gmail_password = 'Turf@1234'
+# paytm Payments Integration
+import logging
+import requests
+from app.paytm_checksum import generate_checksum, verify_checksum
 
-    sent_from = gmail_user
-    subject = 'Password reset requested'
-    body = "Dear, User\nTo reset your password click on this link "+link+"\n\nThis link is valid for 10 minutes.\n\nAlternatively, you can paste the following link in your browser's address bar:\n"+link+"\n\nSincerely\nTeam OnlineTurfBooking"
+logging.basicConfig(level=logging.DEBUG)
 
-    email_text = """\
-    From: %s
-    To: %s
-    Subject: %s
-
-    %s
-    """ % (sent_from, to, subject, body)
-
-    try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.ehlo()
-        server.login(gmail_user, gmail_password)
-        server.sendmail(sent_from, to, email_text)
-        server.close()
-        print('Email sent!')
-        return True
-    except:
-        print('Something went wrong...')
-        return False
+# Staging configs:
+# Keys from https://dashboard.paytm.com/next/apikeys
+MERCHANT_ID = "MAynRp71846065270029"
+MERCHANT_KEY = "YP6od4BPETOp%4Gx"
+WEBSITE_NAME = "WEBSTAGING"
+INDUSTRY_TYPE_ID = "Retail"
+BASE_URL = "https://securegw-stage.paytm.in"
 
 
-def checkMail(email):
-    cur = mysql.connection.cursor()
-    cur.execute('select userID from users where email = %s', (email,))
-    logdata = cur.fetchone()
-    cur.close()
-    if logdata:
-        return True
-    else:
-        return False
+# Production configs:
+# Keys from https://dashboard.paytm.com/next/apikeys
+# MERCHANT_ID = "<MERCHANT_ID>"
+# MERCHANT_KEY = "<MERCHANT_KEY>"
+# WEBSITE_NAME = "<WEBSITE_NAME>"
+# INDUSTRY_TYPE_ID = "<INDUSTRY_TYPE_ID>"
+# BASE_URL = "https://securegw.paytm.in"
+
+
+@user.route('/acceptPayment')
+def acceptPayment():
+    amount = 800
+    transaction_data = {
+        "MID": MERCHANT_ID,
+        "WEBSITE": WEBSITE_NAME,
+        "INDUSTRY_TYPE_ID": INDUSTRY_TYPE_ID,
+        "ORDER_ID": str(datetime.datetime.now().timestamp()),
+        "CUST_ID": "007",
+        "TXN_AMOUNT": str(amount),
+        "CHANNEL_ID": "WEB",
+        "MOBILE_NO": "7777777777",
+        "EMAIL": "example@paytm.com",
+        "CALLBACK_URL": "http://127.0.0.1:5000/callback"
+    }
+
+    # Generate checksum hash
+    transaction_data["CHECKSUMHASH"] = generate_checksum(transaction_data, MERCHANT_KEY)
+
+    logging.info("Request params: {transaction_data}".format(transaction_data=transaction_data))
+
+    url = BASE_URL + '/theia/processTransaction'
+    return render_template("user/index.html", data=transaction_data, url=url)
+
+
+@user.route('/callback', methods=["GET", "POST"])
+def callback():
+    # log the callback response payload returned:
+    callback_response = request.form.to_dict()
+    logging.info("Transaction response: {callback_response}".format(callback_response=callback_response))
+
+    # verify callback response checksum:
+    checksum_verification_status = verify_checksum(callback_response, MERCHANT_KEY,
+                                                   callback_response.get("CHECKSUMHASH"))
+    logging.info("checksum_verification_status: {check_status}".format(check_status=checksum_verification_status))
+
+    # verify transaction status:
+    transaction_verify_payload = {
+        "MID": callback_response.get("MID"),
+        "ORDERID": callback_response.get("ORDERID"),
+        "CHECKSUMHASH": callback_response.get("CHECKSUMHASH")
+    }
+    url = BASE_URL + '/order/status'
+    verification_response = requests.post(url=url, json=transaction_verify_payload)
+    logging.info("Verification response: {verification_response}".format(
+        verification_response=verification_response.json()))
+
+    return render_template("user/callback.html",
+                           callback_response=callback_response,
+                           checksum_verification_status=checksum_verification_status,
+                           verification_response=verification_response.json())
