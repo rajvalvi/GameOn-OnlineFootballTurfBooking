@@ -1,0 +1,35 @@
+{% extends "admin/admin_layout.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block content %}
+
+{% if bookingData!=() %}
+    <table class="table table-success table-striped table-hover">
+        <thead>
+        <tr>
+            <td>User ID</td>
+            <td>Date</td>
+            <td>Time</td>
+            <td>Cancel</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for data in bookingData  %}
+        <tr>
+            <td>{{data[1]}}</td>
+            <td>{{data[2]}}</td>
+            <td>{{data[3]}}</td>
+            <td><button type="button" class="btn btn-danger">
+            Cancle
+            </button></td>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+      <h3>No bookings :</h3>
+{% endif %}
+
+{% endblock %}
