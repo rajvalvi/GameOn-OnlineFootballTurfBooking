@@ -71,3 +71,26 @@ def home():
     else:
         return redirect(url_for('admin.login'))
 
+
+# Booking for admin side 
+def createBookingList(start_time, end_time, bookedDetails):
+    turfTimeDetails=[]
+    today = datetime.datetime.now().replace(microsecond=0, second=0, minute=0) + datetime.timedelta(hours=2)
+    end_date=today + datetime.timedelta(days=3)
+    cur_time = today.time()
+    cur_time=datetime.datetime.combine(datetime.date.min, cur_time) - datetime.datetime.min
+    while(today<end_date):
+        #print("Date : ",today.date())
+        while cur_time>=start_time and cur_time<=end_time:   
+            status=0     
+            #print(cur_time)
+            for booked in bookedDetails:
+                if booked[0]==today.date() and booked[1]==cur_time:
+                    status=1
+                    break
+            turfTimeDetails.append((today.date(),cur_time,status))  
+            cur_time += datetime.timedelta(hours=1)
+        cur_time=start_time
+        today += datetime.timedelta(days=1)
+    return turfTimeDetails
+
